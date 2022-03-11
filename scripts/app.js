@@ -36,14 +36,14 @@ const updateUI = (data) => {
     // }
 
     // Ternary Operator(same result as above)
-    let timeSrc = weather.IsDayTime ? 'img/day.svg' : 'img/night.svg'
+    let timeSrc = weather.IsDayTime ? 'img/day.svg' : 'img/night.svg';
 
 
     time.setAttribute('src', timeSrc)
 
     // toggle the card
     if (card.classList.contains('d-none')) {
-        card.classList.remove('d-none')
+        card.classList.remove('d-none');
     }
 }
 
@@ -51,31 +51,29 @@ const updateUI = (data) => {
 const updateCity = async (city) => {
     // console.log(city)
     const cityDetails = await getCity(city);
-    const weather = await getWeather(cityDetails.Key)
+    const weather = await getWeather(cityDetails.Key);
 
-    return {
-        cityDetails: cityDetails,
-        weather: weather
-    }
+    // return {
+    //     cityDetails: cityDetails,
+    //     weather: weather
+    // }
+
     // Object shorthand notation
     // when we have a property name and a value that 
     // are exactly the same name, we can if we want to,
     // just delete on of them. And that does exactly the
     // same thing. So the return can short as below:
-    // return {
-    //     cityDetails,
-    //     weather
-    // }
+    return { cityDetails, weather };
 }
 
 cityForm.addEventListener('submit', (evt) => {
     // prevent default action
-    evt.preventDefault()
+    evt.preventDefault();
 
     // get city value
     const city = cityForm.city.value.trim();
 
-    cityForm.reset()
+    cityForm.reset();
 
     // update the ui with new city
     updateCity(city)
@@ -83,5 +81,14 @@ cityForm.addEventListener('submit', (evt) => {
         .then((data) => updateUI(data))
         // cityDetails: {Version: 1, Key: '101924', Type: 'City', Rank: 10, LocalizedName: 'Beijing', …}
         // weather: [{…}]
-        .catch(err => console.log(err))
+        .catch(err => console.log(err));
+
+    // set local storage 
+    localStorage.setItem('city', city);
 })
+
+if (localStorage.getItem('city')) {
+    updateCity(localStorage.getItem('city'))
+        .then((data) => updateUI(data))
+        .catch(err => console.log(err));
+}
